@@ -11,6 +11,9 @@ import torch as th
 import torch.distributed as dist
 import torch.nn.functional as F
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from guided_diffusion import dist_util, logger
 from guided_diffusion.script_util import (
     NUM_CLASSES,
@@ -21,7 +24,6 @@ from guided_diffusion.script_util import (
     add_dict_to_argparser,
     args_to_dict,
 )
-
 
 def main():
     args = create_argparser().parse_args()
@@ -113,11 +115,11 @@ def main():
 def create_argparser():
     defaults = dict(
         clip_denoised=True,
-        num_samples=10000,
+        num_samples=400,
         batch_size=16,
         use_ddim=False,
-        model_path="",
-        classifier_path="",
+        model_path="models/64x64_diffusion.pt",
+        classifier_path="models/64x64_classifier.pt",
         classifier_scale=1.0,
     )
     defaults.update(model_and_diffusion_defaults())

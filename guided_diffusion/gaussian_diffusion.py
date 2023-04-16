@@ -14,6 +14,7 @@ import torch as th
 from .nn import mean_flat
 from .losses import normal_kl, discretized_gaussian_log_likelihood
 
+x_before = ''
 
 def get_named_beta_schedule(schedule_name, num_diffusion_timesteps):
     """
@@ -362,7 +363,11 @@ class GaussianDiffusion:
 
         This uses the conditioning strategy from Sohl-Dickstein et al. (2015).
         """
-        gradient = cond_fn(x, self._scale_timesteps(t), **model_kwargs)
+        global x_before
+        if x_before == '':
+            x_before = x
+        gradient = cond_fn(x_before, self._scale_timesteps(t), **model_kwargs)
+        x_before = x
         new_mean = (
             p_mean_var["mean"].float() + p_mean_var["variance"] * gradient.float()
         )

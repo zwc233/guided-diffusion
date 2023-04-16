@@ -17,8 +17,6 @@ GPUS_PER_NODE = 8
 
 SETUP_RETRY_COUNT = 3
 
-import os
-os.environ["PL_TORCH_DISTRIBUTED_BACKEND"] = "gloo"
 
 def setup_dist():
     """
@@ -29,9 +27,8 @@ def setup_dist():
     os.environ["CUDA_VISIBLE_DEVICES"] = f"{MPI.COMM_WORLD.Get_rank() % GPUS_PER_NODE}"
 
     comm = MPI.COMM_WORLD
-    # backend = "gloo" if not th.cuda.is_available() else "nccl"
-    backend = "gloo"
-    
+    backend = "gloo" if not th.cuda.is_available() else "nccl"
+
     if backend == "gloo":
         hostname = "localhost"
     else:
